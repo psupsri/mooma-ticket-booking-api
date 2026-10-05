@@ -1,0 +1,5 @@
+CREATE TABLE cinemas (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    seats JSONB NOT NULL
+);

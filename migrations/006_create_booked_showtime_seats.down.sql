@@ -1,0 +1,1 @@
+DROP TABLE booked_showtime_seats;
