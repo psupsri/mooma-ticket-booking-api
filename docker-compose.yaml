@@ -7,17 +7,21 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DATABASE_URL: postgres://mooma:mooma@postgres:5432/mooma
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     depends_on:
       - postgres
-      
+
   postgres:
     image: postgres:17
     container_name: mooma-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: mooma
-      POSTGRES_PASSWORD: mooma
-      POSTGRES_DB: mooma
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
