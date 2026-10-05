@@ -1,0 +1,23 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mooma-app
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://mooma:mooma@postgres:5432/mooma
+    depends_on:
+      - postgres
+      
+  postgres:
+    image: postgres:17
+    container_name: mooma-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mooma
+      POSTGRES_PASSWORD: mooma
+      POSTGRES_DB: mooma
+    ports:
+      - "5432:5432"
