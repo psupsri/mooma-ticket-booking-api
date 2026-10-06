@@ -17,4 +17,5 @@ func RegisterRoutes(r *gin.Engine, handler Handlers) {
 func AuthRoutes(r *gin.Engine, handler *handlers.AuthHandler) {
 	authRouter := r.Group("/auth")
 	authRouter.POST("/register", handler.Register)
+	authRouter.POST("/login", handler.Login)
 }

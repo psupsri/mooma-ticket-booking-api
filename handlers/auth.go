@@ -46,3 +46,25 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 		},
 	})
 }
+
+func (h AuthHandler) Login(ctx *gin.Context) {
+	var request model.LoginRequest
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"status":  "failed",
+			"message": "invalid request",
+		})
+		return
+	}
+	accessToken, err := h.authService.Login(request)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.LoginResponse{
+		AccessToken: accessToken,
+	})
+}
