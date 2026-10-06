@@ -41,7 +41,7 @@ func (s *AuthService) Register(request model.RegisterRequest) (model.Customer, e
 	return customer, nil
 }
 
-func (s AuthService) Login(request model.LoginRequest) (string, error) {
+func (s *AuthService) Login(request model.LoginRequest) (string, error) {
 	var accessToken string
 	customer, err := s.authRepo.FindByEmail(request.Email)
 

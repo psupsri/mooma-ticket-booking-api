@@ -7,7 +7,6 @@ import (
 	"mooma-api/repository"
 	"mooma-api/routes"
 	"mooma-api/service"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,18 +20,17 @@ func main() {
 
 	r := gin.Default()
 
-	r.GET("/health", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "ok",
-		})
-	})
-
 	authRepo := repository.NewAuthRepository(db)
 	authService := service.NewAuthService(authRepo)
 	authHandler := handlers.NewAuthHandler(authService)
 
+	movieRepo := repository.NewMovieRepository(db)
+	movieService := service.NewMovieService(*movieRepo)
+	movieHandler := handlers.NewMovieHandler(*movieService)
+
 	appHandlers := routes.Handlers{
-		AuthHandler: authHandler,
+		AuthHandler:  authHandler,
+		MovieHandler: movieHandler,
 	}
 
 	routes.RegisterRoutes(r, appHandlers)

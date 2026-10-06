@@ -47,7 +47,7 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 	})
 }
 
-func (h AuthHandler) Login(ctx *gin.Context) {
+func (h *AuthHandler) Login(ctx *gin.Context) {
 	var request model.LoginRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
