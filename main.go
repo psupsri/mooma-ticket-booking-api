@@ -3,6 +3,10 @@ package main
 import (
 	"log"
 	"mooma-api/config"
+	"mooma-api/handlers"
+	"mooma-api/repository"
+	"mooma-api/routes"
+	"mooma-api/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,8 +19,6 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	_ = db
-
 	r := gin.Default()
 
 	r.GET("/health", func(ctx *gin.Context) {
@@ -24,6 +26,16 @@ func main() {
 			"message": "ok",
 		})
 	})
+
+	authRepo := repository.NewAuthRepository(db)
+	authService := service.NewAuthService(authRepo)
+	authHandler := handlers.NewAuthHandler(authService)
+
+	appHandlers := routes.Handlers{
+		AuthHandler: authHandler,
+	}
+
+	routes.RegisterRoutes(r, appHandlers)
 
 	r.Run()
 }
