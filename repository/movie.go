@@ -16,6 +16,10 @@ func NewMovieRepository(db *gorm.DB) *MovieRepository {
 	}
 }
 
+func (r *MovieRepository) Create(movie *model.Movie) error {
+	return r.db.Create(movie).Error
+}
+
 func (r *MovieRepository) GetAll() ([]model.Movie, error) {
 	var movies []model.Movie
 	result := r.db.Find(&movies)

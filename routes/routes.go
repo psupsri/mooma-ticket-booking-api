@@ -2,6 +2,7 @@ package routes
 
 import (
 	"mooma-api/handlers"
+	"mooma-api/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -31,5 +32,6 @@ func AuthRoutes(r *gin.Engine, handler *handlers.AuthHandler) {
 
 func MovieRoutes(r *gin.Engine, handler *handlers.MovieHandler) {
 	movieRouter := r.Group("/movie")
+	movieRouter.POST("/", middleware.AuthMiddleware, handler.CreateMovie)
 	movieRouter.GET("/", handler.GetAllMovie)
 }

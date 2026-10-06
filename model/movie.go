@@ -6,6 +6,11 @@ type Movie struct {
 	PosterURL string
 }
 
+type CreateMovieRequest struct {
+	Title     string `json:"title" binding:"required"`
+	PosterURL string `json:"poster_url"`
+}
+
 type MovieResponse struct {
 	ID        uint   `json:"id"`
 	Title     string `json:"title"`
