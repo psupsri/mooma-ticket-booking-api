@@ -9,10 +9,10 @@ import (
 )
 
 type MovieHandler struct {
-	service service.MovieService
+	service *service.MovieService
 }
 
-func NewMovieHandler(service service.MovieService) *MovieHandler {
+func NewMovieHandler(service *service.MovieService) *MovieHandler {
 	return &MovieHandler{
 		service: service,
 	}

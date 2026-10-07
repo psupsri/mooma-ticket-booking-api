@@ -9,13 +9,15 @@ import (
 )
 
 type Handlers struct {
-	AuthHandler  *handlers.AuthHandler
-	MovieHandler *handlers.MovieHandler
+	AuthHandler     *handlers.AuthHandler
+	MovieHandler    *handlers.MovieHandler
+	ShowtimeHandler *handlers.ShowtimeHandler
 }
 
 func RegisterRoutes(r *gin.Engine, handler Handlers) {
 	AuthRoutes(r, handler.AuthHandler)
 	MovieRoutes(r, handler.MovieHandler)
+	ShowtimeRoutes(r, handler.ShowtimeHandler)
 
 	r.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
@@ -35,4 +37,9 @@ func MovieRoutes(r *gin.Engine, handler *handlers.MovieHandler) {
 	movieRouter.POST("/", middleware.AuthMiddleware, handler.CreateMovie)
 	movieRouter.GET("/", handler.GetAllMovie)
 	movieRouter.GET("/:id", handler.GetByID)
+}
+
+func ShowtimeRoutes(r *gin.Engine, handler *handlers.ShowtimeHandler) {
+	showtimeRouter := r.Group("/showtime")
+	showtimeRouter.POST("/", middleware.AuthMiddleware, handler.CreateShowtime)
 }

@@ -12,6 +12,19 @@ type Showtime struct {
 	Cinema Cinema
 }
 
+type ShowtimeResponse struct {
+	ID       uint `gorm:"primaryKey"`
+	MovieID  uint
+	CinemaID uint
+	Showtime time.Time
+}
+
+type CreateShowtimeRequest struct {
+	MovieID  uint      `json:"movie_id"`
+	CinemaID uint      `json:"cinema_id"`
+	Showtime time.Time `json:"showtime"`
+}
+
 type MovieShowtimeResponse struct {
 	CinemaID  uint                     `json:"cinema_id"`
 	Showtimes []CinemaShowtimeResponse `json:"cinema_showtimes"`

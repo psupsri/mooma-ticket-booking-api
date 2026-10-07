@@ -25,12 +25,17 @@ func main() {
 	authHandler := handlers.NewAuthHandler(authService)
 
 	movieRepo := repository.NewMovieRepository(db)
-	movieService := service.NewMovieService(*movieRepo)
-	movieHandler := handlers.NewMovieHandler(*movieService)
+	movieService := service.NewMovieService(movieRepo)
+	movieHandler := handlers.NewMovieHandler(movieService)
+
+	showtimeRepo := repository.NewShowtimeRepository(db)
+	showtimeService := service.NewShowtimeService(showtimeRepo)
+	showtimeHandler := handlers.NewShowtimeHandler(showtimeService)
 
 	appHandlers := routes.Handlers{
-		AuthHandler:  authHandler,
-		MovieHandler: movieHandler,
+		AuthHandler:     authHandler,
+		MovieHandler:    movieHandler,
+		ShowtimeHandler: showtimeHandler,
 	}
 
 	routes.RegisterRoutes(r, appHandlers)
