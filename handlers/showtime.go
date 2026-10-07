@@ -40,3 +40,18 @@ func (h *ShowtimeHandler) CreateShowtime(ctx *gin.Context) {
 		Data:   showtime,
 	})
 }
+
+func (h *ShowtimeHandler) GetAllShowtime(ctx *gin.Context) {
+	showtimes, err := h.service.GetAllShowtime()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.SuccessResponse[[]model.ShowtimeResponse]{
+		Status: "success",
+		Data:   showtimes,
+	})
+}

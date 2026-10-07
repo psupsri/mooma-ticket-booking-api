@@ -19,3 +19,12 @@ func NewShowtimeRepository(db *gorm.DB) *ShowtimeRepository {
 func (r *ShowtimeRepository) CreateShowtime(request *model.Showtime) error {
 	return r.db.Create(request).Error
 }
+
+func (r *ShowtimeRepository) GetAllShowtime() ([]model.Showtime, error) {
+	var showtimes []model.Showtime
+	result := r.db.Find(&showtimes)
+	if result.Error != nil {
+		return showtimes, result.Error
+	}
+	return showtimes, nil
+}

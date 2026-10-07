@@ -35,7 +35,7 @@ func (h *MovieHandler) CreateMovie(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.JSON(http.StatusOK, model.SuccessResponse[model.Movie]{
+	ctx.JSON(http.StatusOK, model.SuccessResponse[model.MovieResponse]{
 		Status: "success",
 		Data:   movie,
 	})

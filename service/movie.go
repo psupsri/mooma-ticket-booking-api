@@ -15,15 +15,21 @@ func NewMovieService(repository *repository.MovieRepository) *MovieService {
 	}
 }
 
-func (s *MovieService) CreateMovie(request model.CreateMovieRequest) (model.Movie, error) {
+func (s *MovieService) CreateMovie(request model.CreateMovieRequest) (model.MovieResponse, error) {
+	var response model.MovieResponse
 	movie := model.Movie{
 		Title:     request.Title,
 		PosterURL: request.PosterURL,
 	}
 	if err := s.repository.Create(&movie); err != nil {
-		return movie, err
+		return response, err
 	}
-	return movie, nil
+	response = model.MovieResponse{
+		ID:        movie.ID,
+		Title:     movie.Title,
+		PosterURL: movie.PosterURL,
+	}
+	return response, nil
 }
 
 func (s *MovieService) GetAllMovie() ([]model.MovieResponse, error) {

@@ -14,7 +14,12 @@ type CinemaResponse struct {
 	Seats []CinemaSeatResponse `json:"seats"`
 }
 
+type CinemaSeat struct {
+	Line   string
+	Number string
+}
+
 type CinemaSeatResponse struct {
-	Line   string `json:"line"`
-	Number string `json:"number"`
+	Line    string   `json:"line"`
+	Numbers []string `json:"numbers"`
 }

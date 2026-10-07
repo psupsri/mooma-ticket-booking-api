@@ -33,3 +33,20 @@ func (s *ShowtimeService) CreateShowtime(request model.CreateShowtimeRequest) (m
 	}
 	return response, nil
 }
+
+func (s *ShowtimeService) GetAllShowtime() ([]model.ShowtimeResponse, error) {
+	var response []model.ShowtimeResponse
+	showtimes, err := s.repository.GetAllShowtime()
+	if err != nil {
+		return response, err
+	}
+	for _, showtime := range showtimes {
+		response = append(response, model.ShowtimeResponse{
+			ID:       showtime.ID,
+			MovieID:  showtime.MovieID,
+			CinemaID: showtime.CinemaID,
+			Showtime: showtime.Showtime,
+		})
+	}
+	return response, nil
+}

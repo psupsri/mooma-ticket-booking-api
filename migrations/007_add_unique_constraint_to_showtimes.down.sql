@@ -1,0 +1,2 @@
+ALTER TABLE showtimes
+DROP CONSTRAINT unique_movie_cinema_showtime;
