@@ -43,3 +43,17 @@ func (s *MovieService) GetAllMovie() ([]model.MovieResponse, error) {
 
 	return response, nil
 }
+
+func (s *MovieService) GetByID(id string) (model.MovieResponse, error) {
+	var response model.MovieResponse
+	movie, err := s.repository.GetByID(id)
+	if err != nil {
+		return response, err
+	}
+	response = model.MovieResponse{
+		ID:        movie.ID,
+		Title:     movie.Title,
+		PosterURL: movie.PosterURL,
+	}
+	return response, err
+}

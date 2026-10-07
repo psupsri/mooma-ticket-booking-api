@@ -55,3 +55,19 @@ func (h *MovieHandler) GetAllMovie(ctx *gin.Context) {
 		Data:   movies,
 	})
 }
+
+func (h *MovieHandler) GetByID(ctx *gin.Context) {
+	id := ctx.Param("id")
+	movie, err := h.service.GetByID(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.SuccessResponse[model.MovieResponse]{
+		Status: "success",
+		Data:   movie,
+	})
+}

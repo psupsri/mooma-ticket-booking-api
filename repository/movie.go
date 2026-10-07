@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"errors"
 	"mooma-api/model"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -27,4 +29,20 @@ func (r *MovieRepository) GetAll() ([]model.Movie, error) {
 		return movies, result.Error
 	}
 	return movies, nil
+}
+
+func (r *MovieRepository) GetByID(id string) (model.Movie, error) {
+	var movie model.Movie
+	uintID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return movie, err
+	}
+	result := r.db.First(&movie, uintID)
+	if result.RowsAffected == 0 {
+		return movie, errors.New("no movie with the id")
+	}
+	if result.Error != nil {
+		return movie, err
+	}
+	return movie, err
 }

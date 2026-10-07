@@ -34,4 +34,5 @@ func MovieRoutes(r *gin.Engine, handler *handlers.MovieHandler) {
 	movieRouter := r.Group("/movie")
 	movieRouter.POST("/", middleware.AuthMiddleware, handler.CreateMovie)
 	movieRouter.GET("/", handler.GetAllMovie)
+	movieRouter.GET("/:id", handler.GetByID)
 }
