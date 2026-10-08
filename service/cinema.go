@@ -43,13 +43,6 @@ func toCinemaSeatsResponse(seats datatypes.JSON) ([]model.CinemaSeatResponse, er
 		return response, err
 	}
 	for _, seat := range cinemaSeats {
-		if len(response) == 0 {
-			response = append(response, model.CinemaSeatResponse{
-				Line:    seat.Line,
-				Numbers: []string{seat.Number},
-			})
-			continue
-		}
 		found := false
 		var foundIndex int
 		for i, r := range response {

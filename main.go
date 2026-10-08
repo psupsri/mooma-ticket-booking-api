@@ -24,13 +24,13 @@ func main() {
 	authService := service.NewAuthService(authRepo)
 	authHandler := handlers.NewAuthHandler(authService)
 
-	movieRepo := repository.NewMovieRepository(db)
-	movieService := service.NewMovieService(movieRepo)
-	movieHandler := handlers.NewMovieHandler(movieService)
-
 	showtimeRepo := repository.NewShowtimeRepository(db)
 	showtimeService := service.NewShowtimeService(showtimeRepo)
 	showtimeHandler := handlers.NewShowtimeHandler(showtimeService)
+
+	movieRepo := repository.NewMovieRepository(db)
+	movieService := service.NewMovieService(movieRepo, showtimeRepo)
+	movieHandler := handlers.NewMovieHandler(movieService)
 
 	cinemaRepo := repository.NewCinemaRepository(db)
 	cinemaService := service.NewCinemaService(cinemaRepo)
@@ -45,5 +45,5 @@ func main() {
 
 	routes.RegisterRoutes(r, appHandlers)
 
-	r.Run()
+	r.Run(":3000")
 }

@@ -39,6 +39,7 @@ func MovieRoutes(r *gin.Engine, handler *handlers.MovieHandler) {
 	movieRouter.POST("/", middleware.AuthMiddleware, handler.CreateMovie)
 	movieRouter.GET("/", handler.GetAllMovie)
 	movieRouter.GET("/:id", handler.GetByID)
+	movieRouter.GET("/:id/showtimes", handler.GetByIDWithShowtimes)
 }
 
 func ShowtimeRoutes(r *gin.Engine, handler *handlers.ShowtimeHandler) {

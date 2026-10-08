@@ -6,12 +6,17 @@ import (
 )
 
 type MovieService struct {
-	repository *repository.MovieRepository
+	repository         *repository.MovieRepository
+	showtimeRepository *repository.ShowtimeRepository
 }
 
-func NewMovieService(repository *repository.MovieRepository) *MovieService {
+func NewMovieService(
+	repository *repository.MovieRepository,
+	showtimeRepository *repository.ShowtimeRepository,
+) *MovieService {
 	return &MovieService{
-		repository: repository,
+		repository:         repository,
+		showtimeRepository: showtimeRepository,
 	}
 }
 
@@ -56,10 +61,65 @@ func (s *MovieService) GetByID(id string) (model.MovieResponse, error) {
 	if err != nil {
 		return response, err
 	}
+
 	response = model.MovieResponse{
 		ID:        movie.ID,
 		Title:     movie.Title,
 		PosterURL: movie.PosterURL,
 	}
 	return response, err
+}
+
+func (s *MovieService) GetByIDWithShowtimes(id string) (model.GetMovieShowtimesResponse, error) {
+	var response model.GetMovieShowtimesResponse
+	movie, err := s.repository.GetByID(id)
+	if err != nil {
+		return response, err
+	}
+	showtimes, err := s.showtimeRepository.GetShowtimeByMovieID(id)
+	if err != nil {
+		return response, err
+	}
+
+	response = model.GetMovieShowtimesResponse{
+		Movie: model.MovieResponse{
+			ID:        movie.ID,
+			Title:     movie.Title,
+			PosterURL: movie.PosterURL,
+		},
+		Showtimes: toMovieShowtime(showtimes),
+	}
+	return response, err
+}
+
+func toMovieShowtime(showtimes []model.Showtime) []model.MovieShowtimeResponse {
+	var response []model.MovieShowtimeResponse
+	for _, showtime := range showtimes {
+		found := false
+		var foundIndex int
+		for index, res := range response {
+			if showtime.CinemaID == res.CinemaID {
+				found = true
+				foundIndex = index
+			}
+		}
+		if found {
+			response[foundIndex].Showtimes = append(response[foundIndex].Showtimes,
+				model.CinemaShowtimeResponse{
+					ID:       showtime.ID,
+					Showtime: showtime.Showtime,
+				})
+		} else {
+			response = append(response, model.MovieShowtimeResponse{
+				CinemaID: showtime.CinemaID,
+				Showtimes: []model.CinemaShowtimeResponse{
+					{
+						ID:       showtime.ID,
+						Showtime: showtime.Showtime,
+					},
+				},
+			})
+		}
+	}
+	return response
 }

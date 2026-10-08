@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: mooma-app
     ports:
-      - "8080:8080"
+      - "3000:3000"
     environment:
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}

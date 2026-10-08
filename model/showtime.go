@@ -7,9 +7,6 @@ type Showtime struct {
 	MovieID  uint
 	CinemaID uint
 	Showtime time.Time
-
-	Movie  Movie
-	Cinema Cinema
 }
 
 type ShowtimeResponse struct {
@@ -27,7 +24,7 @@ type CreateShowtimeRequest struct {
 
 type MovieShowtimeResponse struct {
 	CinemaID  uint                     `json:"cinema_id"`
-	Showtimes []CinemaShowtimeResponse `json:"cinema_showtimes"`
+	Showtimes []CinemaShowtimeResponse `json:"showtimes"`
 }
 
 type ShowtimeSeatsResponse struct {

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"mooma-api/model"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -23,6 +24,21 @@ func (r *ShowtimeRepository) CreateShowtime(request *model.Showtime) error {
 func (r *ShowtimeRepository) GetAllShowtime() ([]model.Showtime, error) {
 	var showtimes []model.Showtime
 	result := r.db.Find(&showtimes)
+	if result.Error != nil {
+		return showtimes, result.Error
+	}
+	return showtimes, nil
+}
+
+func (r *ShowtimeRepository) GetShowtimeByMovieID(id string) ([]model.Showtime, error) {
+	var showtimes []model.Showtime
+
+	uintID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return showtimes, err
+	}
+
+	result := r.db.Where("movie_id = ?", uintID).Find(&showtimes)
 	if result.Error != nil {
 		return showtimes, result.Error
 	}
