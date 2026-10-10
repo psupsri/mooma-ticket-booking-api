@@ -38,24 +38,16 @@ func (s *CinemaService) GetByID(id string) (model.CinemaResponse, error) {
 func toCinemaSeatsResponse(seats datatypes.JSON) ([]model.CinemaSeatResponse, error) {
 	var cinemaSeats []model.CinemaSeat
 	var response = []model.CinemaSeatResponse{}
-
+	var lineIndex = make(map[string]int)
 	if err := json.Unmarshal(seats, &cinemaSeats); err != nil {
 		return response, err
 	}
 	for _, seat := range cinemaSeats {
-		found := false
-		var foundIndex int
-		for i, r := range response {
-			if seat.Line == r.Line {
-				found = true
-				foundIndex = i
-				break
-			}
-		}
-
+		index, found := lineIndex[seat.Line]
 		if found {
-			response[foundIndex].Numbers = append(response[foundIndex].Numbers, seat.Number)
+			response[index].Numbers = append(response[index].Numbers, seat.Number)
 		} else {
+			lineIndex[seat.Line] = len(response)
 			response = append(response, model.CinemaSeatResponse{
 				Line:    seat.Line,
 				Numbers: []string{seat.Number},

@@ -94,22 +94,17 @@ func (s *MovieService) GetByIDWithShowtimes(id string) (model.GetMovieShowtimesR
 
 func toMovieShowtime(showtimes []model.Showtime) []model.MovieShowtimeResponse {
 	var response []model.MovieShowtimeResponse
+	var cinemaIndex = make(map[uint]int)
 	for _, showtime := range showtimes {
-		found := false
-		var foundIndex int
-		for index, res := range response {
-			if showtime.CinemaID == res.CinemaID {
-				found = true
-				foundIndex = index
-			}
-		}
+		index, found := cinemaIndex[showtime.CinemaID]
 		if found {
-			response[foundIndex].Showtimes = append(response[foundIndex].Showtimes,
+			response[index].Showtimes = append(response[index].Showtimes,
 				model.CinemaShowtimeResponse{
 					ID:       showtime.ID,
 					Showtime: showtime.Showtime,
 				})
 		} else {
+			cinemaIndex[showtime.CinemaID] = len(response)
 			response = append(response, model.MovieShowtimeResponse{
 				CinemaID: showtime.CinemaID,
 				Showtimes: []model.CinemaShowtimeResponse{
