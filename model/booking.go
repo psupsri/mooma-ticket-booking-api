@@ -27,6 +27,11 @@ type Booking struct {
 	Showtime Showtime
 }
 
+type CreateBookingRequest struct {
+	ShowtimeID uint         `json:"showtime_id"`
+	Seats      []CinemaSeat `json:"seats"`
+}
+
 type GetBookingResponse struct {
 	ID       uint                   `json:"id"`
 	Customer CustomerResponse       `json:"customer"`
@@ -36,7 +41,14 @@ type GetBookingResponse struct {
 	Seats    []CinemaSeatResponse   `json:"seats"`
 }
 
-type BookedShowtimeSeats struct {
+type BookedShowtimeSeat struct {
+	ShowtimeID uint   `gorm:"primaryKey;not null" json:"showtime_id"`
+	SeatLine   string `gorm:"primaryKey;type:varchar(10);not null" json:"seat_line"`
+	SeatNumber string `gorm:"primaryKey;type:varchar(10);not null" json:"seat_number"`
+	BookingID  uint   `gorm:"not null;index" json:"booking_id"`
+}
+
+type BookedShowtimeSeatsResponse struct {
 	ShowtimeID uint   `json:"showtime_id"`
 	BookingID  uint   `json:"booking_id"`
 	SeatLine   string `json:"seat_line"`

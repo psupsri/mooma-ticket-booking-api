@@ -10,6 +10,12 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type contextKey string
+
+const (
+	customerID contextKey = "customer_id"
+)
+
 func AuthMiddleware(ctx *gin.Context) {
 	key := config.Load().JWTSecret
 	authHeader := ctx.GetHeader("Authorization")
@@ -27,5 +33,24 @@ func AuthMiddleware(ctx *gin.Context) {
 		})
 		ctx.Abort()
 	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"status":  "failed",
+			"message": "invalid claims",
+		})
+		return
+	}
+	customerIDFloat, ok := claims["customer_id"].(float64)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"message": "invalid customer ID",
+		})
+		return
+	}
+
+	ctx.Set(string(customerID), uint(customerIDFloat))
+
 	ctx.Next()
 }

@@ -13,6 +13,7 @@ type Handlers struct {
 	MovieHandler    *handlers.MovieHandler
 	ShowtimeHandler *handlers.ShowtimeHandler
 	CinemaHandler   *handlers.CinemaHandler
+	BookingHandler  *handlers.BookingHandler
 }
 
 func RegisterRoutes(r *gin.Engine, handler Handlers) {
@@ -20,6 +21,7 @@ func RegisterRoutes(r *gin.Engine, handler Handlers) {
 	MovieRoutes(r, handler.MovieHandler)
 	ShowtimeRoutes(r, handler.ShowtimeHandler)
 	CinemaRoutes(r, handler.CinemaHandler)
+	BookingRoutes(r, handler.BookingHandler)
 
 	r.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
@@ -51,4 +53,9 @@ func ShowtimeRoutes(r *gin.Engine, handler *handlers.ShowtimeHandler) {
 func CinemaRoutes(r *gin.Engine, handler *handlers.CinemaHandler) {
 	cinemaRouter := r.Group("/cinema")
 	cinemaRouter.GET("/:id", handler.GetByID)
+}
+
+func BookingRoutes(r *gin.Engine, handler *handlers.BookingHandler) {
+	bookingRouter := r.Group("/booking")
+	bookingRouter.POST("/", middleware.AuthMiddleware, handler.CreateBooking)
 }
