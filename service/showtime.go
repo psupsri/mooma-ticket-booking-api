@@ -50,3 +50,18 @@ func (s *ShowtimeService) GetAllShowtime() ([]model.ShowtimeResponse, error) {
 	}
 	return response, nil
 }
+
+func (s *ShowtimeService) GetBookedSeats(id string) ([]model.BookedSeatResponse, error) {
+	var response = []model.BookedSeatResponse{}
+	seats, err := s.repository.GetBookedSeats(id)
+	if err != nil {
+		return response, err
+	}
+	for _, seat := range seats {
+		response = append(response, model.BookedSeatResponse{
+			Line:   seat.SeatLine,
+			Number: seat.SeatNumber,
+		})
+	}
+	return response, nil
+}

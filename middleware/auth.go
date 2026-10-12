@@ -27,11 +27,11 @@ func AuthMiddleware(ctx *gin.Context) {
 		return []byte(key), nil
 	})
 	if err != nil || !token.Valid {
-		ctx.JSON(http.StatusUnauthorized, gin.H{
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"status":  "failed",
 			"message": "unauthorized",
 		})
-		ctx.Abort()
+		return
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)

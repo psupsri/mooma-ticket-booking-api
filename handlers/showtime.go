@@ -55,3 +55,19 @@ func (h *ShowtimeHandler) GetAllShowtime(ctx *gin.Context) {
 		Data:   showtimes,
 	})
 }
+
+func (h *ShowtimeHandler) GetBookedSeats(ctx *gin.Context) {
+	id := ctx.Param("id")
+	seats, err := h.service.GetBookedSeats(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.SuccessResponse[[]model.BookedSeatResponse]{
+		Status: "success",
+		Data:   seats,
+	})
+}

@@ -48,6 +48,7 @@ func ShowtimeRoutes(r *gin.Engine, handler *handlers.ShowtimeHandler) {
 	showtimeRouter := r.Group("/showtime")
 	showtimeRouter.POST("/", middleware.AuthMiddleware, handler.CreateShowtime)
 	showtimeRouter.GET("/", handler.GetAllShowtime)
+	showtimeRouter.GET("/:id/booked-seats", handler.GetBookedSeats)
 }
 
 func CinemaRoutes(r *gin.Engine, handler *handlers.CinemaHandler) {
@@ -58,4 +59,6 @@ func CinemaRoutes(r *gin.Engine, handler *handlers.CinemaHandler) {
 func BookingRoutes(r *gin.Engine, handler *handlers.BookingHandler) {
 	bookingRouter := r.Group("/booking")
 	bookingRouter.POST("/", middleware.AuthMiddleware, handler.CreateBooking)
+	bookingRouter.GET("/", middleware.AuthMiddleware, handler.GetMyBookings)
+	bookingRouter.DELETE("/:id", middleware.AuthMiddleware, handler.CancelBooking)
 }

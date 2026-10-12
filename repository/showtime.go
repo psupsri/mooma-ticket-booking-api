@@ -44,3 +44,18 @@ func (r *ShowtimeRepository) GetShowtimeByMovieID(id string) ([]model.Showtime, 
 	}
 	return showtimes, nil
 }
+
+func (r *ShowtimeRepository) GetBookedSeats(id string) ([]model.BookedShowtimeSeat, error) {
+	var seats []model.BookedShowtimeSeat
+
+	uintID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return seats, err
+	}
+
+	result := r.db.Where("showtime_id = ?", uintID).Find(&seats)
+	if result.Error != nil {
+		return seats, result.Error
+	}
+	return seats, nil
+}

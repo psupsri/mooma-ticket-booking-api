@@ -41,4 +41,8 @@ type ShowtimeAvailableSeat struct {
 type CinemaShowtimeResponse struct {
 	ID       uint      `json:"id"`
 	Showtime time.Time `json:"showtime"`
+	// StartsAt is the showtime as a real instant in the cinema's time zone;
+	// Bookable is false from 15 minutes after it starts.
+	StartsAt time.Time `json:"starts_at"`
+	Bookable bool      `json:"bookable"`
 }

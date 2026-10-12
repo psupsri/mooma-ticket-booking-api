@@ -33,12 +33,18 @@ type CreateBookingRequest struct {
 }
 
 type GetBookingResponse struct {
-	ID       uint                   `json:"id"`
-	Customer CustomerResponse       `json:"customer"`
-	Movie    MovieResponse          `json:"movie"`
-	CinemaID uint                   `json:"cinema_id"`
-	Showtime CinemaShowtimeResponse `json:"showtime"`
-	Seats    []CinemaSeatResponse   `json:"seats"`
+	ID        uint                   `json:"id"`
+	Customer  CustomerResponse       `json:"customer"`
+	Movie     MovieResponse          `json:"movie"`
+	CinemaID  uint                   `json:"cinema_id"`
+	Showtime  CinemaShowtimeResponse `json:"showtime"`
+	Seats     []CinemaSeatResponse   `json:"seats"`
+	Status    BookingStatus          `json:"status"`
+	CreatedAt time.Time              `json:"created_at"`
+	// StartsAt is the showtime as a real instant in the cinema's time zone.
+	StartsAt       time.Time `json:"starts_at"`
+	CancelDeadline time.Time `json:"cancel_deadline"`
+	CanCancel      bool      `json:"can_cancel"`
 }
 
 type BookedShowtimeSeat struct {
@@ -53,4 +59,9 @@ type BookedShowtimeSeatsResponse struct {
 	BookingID  uint   `json:"booking_id"`
 	SeatLine   string `json:"seat_line"`
 	SeatNumber string `json:"seat_number"`
+}
+
+type BookedSeatResponse struct {
+	Line   string `json:"line"`
+	Number string `json:"number"`
 }

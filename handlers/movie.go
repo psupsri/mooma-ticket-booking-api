@@ -42,7 +42,8 @@ func (h *MovieHandler) CreateMovie(ctx *gin.Context) {
 }
 
 func (h *MovieHandler) GetAllMovie(ctx *gin.Context) {
-	movies, err := h.service.GetAllMovie()
+	// ?now_showing=true: only movies with a showtime still open for booking.
+	movies, err := h.service.GetAllMovie(ctx.Query("now_showing") == "true")
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"status":  "failed",

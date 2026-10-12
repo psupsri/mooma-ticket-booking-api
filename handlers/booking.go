@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"mooma-api/model"
 	"mooma-api/service"
 	"net/http"
@@ -18,20 +19,74 @@ func NewBookingHandler(service *service.BookingService) *BookingHandler {
 	}
 }
 
-func (h *BookingHandler) CreateBooking(ctx *gin.Context) {
+// currentCustomerID reads the ID set by AuthMiddleware, answering 401 if it is missing.
+func currentCustomerID(ctx *gin.Context) (uint, bool) {
 	value, exists := ctx.Get("customer_id")
 	if !exists {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"message": "unauthorized",
 		})
-		return
+		return 0, false
 	}
 
-	customerID, ok := value.(uint)
+	id, ok := value.(uint)
 	if !ok {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"message": "invalid user ID",
 		})
+		return 0, false
+	}
+	return id, true
+}
+
+func (h *BookingHandler) GetMyBookings(ctx *gin.Context) {
+	customerID, ok := currentCustomerID(ctx)
+	if !ok {
+		return
+	}
+	bookings, err := h.service.GetCustomerBookings(customerID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, model.SuccessResponse[[]model.GetBookingResponse]{
+		Status: "success",
+		Data:   bookings,
+	})
+}
+
+func (h *BookingHandler) CancelBooking(ctx *gin.Context) {
+	customerID, ok := currentCustomerID(ctx)
+	if !ok {
+		return
+	}
+	id := ctx.Param("id")
+	if err := h.service.CancelBooking(id, customerID); err != nil {
+		status := http.StatusInternalServerError
+		switch {
+		case errors.Is(err, service.ErrBookingNotFound):
+			status = http.StatusNotFound
+		case errors.Is(err, service.ErrCancellationClosed):
+			status = http.StatusConflict
+		}
+		ctx.JSON(status, gin.H{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  "success",
+		"message": "booking cancelled",
+	})
+}
+
+func (h *BookingHandler) CreateBooking(ctx *gin.Context) {
+	customerID, ok := currentCustomerID(ctx)
+	if !ok {
 		return
 	}
 	var request model.CreateBookingRequest
@@ -44,7 +99,16 @@ func (h *BookingHandler) CreateBooking(ctx *gin.Context) {
 	}
 	response, err := h.service.CreateBooking(request, customerID)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
+		status := http.StatusInternalServerError
+		switch {
+		case errors.Is(err, service.ErrNoSeats):
+			status = http.StatusBadRequest
+		case errors.Is(err, service.ErrSeatAlreadyBooked), errors.Is(err, service.ErrBookingClosed):
+			status = http.StatusConflict
+		case errors.Is(err, service.ErrShowtimeNotFound):
+			status = http.StatusNotFound
+		}
+		ctx.JSON(status, gin.H{
 			"status":  "failed",
 			"message": err.Error(),
 		})
