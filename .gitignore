@@ -5,11 +5,15 @@
 *.so
 *.dylib
 
-# Test binary
+# Test binaries
 *.test
 
-# Coverage
+# Code coverage
 *.out
+coverage.*
+!coverage.go
+*.coverprofile
+profile.cov
 coverage.html
 coverage.xml
 
@@ -17,6 +21,9 @@ coverage.xml
 /bin/
 /build/
 /dist/
+
+# Dependency directories
+# vendor/
 
 # Go workspace
 go.work
